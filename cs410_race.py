@@ -2,7 +2,6 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
-#%matplotlib inline
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import re
@@ -17,7 +16,7 @@ soup = BeautifulSoup(html, 'lxml')
 # Get all the table rows:
 rows = soup.find_all('tr')
 
-# Use BeautifulSoup to to extract and clean table data:
+# On approach is to use BeautifulSoup to to extract and clean table data:
 '''
 list_rows = []
 for row in rows:
@@ -27,7 +26,7 @@ for row in rows:
     list_rows.append(cleantext)
 '''
 
-# Use regex to extract and clean table data:
+# Instead of using BeautifulSoup, use regex to extract and clean table data:
 list_rows = []
 for row in rows:
     cells = row.find_all('td')
@@ -94,8 +93,10 @@ df7['Runner_mins'] = time_mins
 # Show some metrics calculated from our data:
 #print(df7.describe(include=[np.number]))
 
-# Set some parameters and create a boxplot of the data:
+# Set some parameters:
 rcParams['figure.figsize'] = 15, 5
+
+#  Create a boxplot of the data:
 '''
 df7.boxplot(column='Runner_mins')
 plt.grid(True, axis='y')
@@ -104,16 +105,17 @@ plt.xticks([1], ['Runners'])
 plt.show()
 '''
 
-# distplot() is deprecated and didn't work, so I modified to use histplot() (could have modified for displot() too).
-#seaborn.histplot(data=None, *, x=None, y=None, hue=None, weights=None, stat='count', bins='auto', binwidth=None, binrange=None, discrete=None, cumulative=False, common_bins=True, common_norm=True, multiple='layer', element='bars', fill=True, shrink=1, kde=False, kde_kws=None, line_kws=None, thresh=0, pthresh=None, pmax=None, cbar=False, cbar_ax=None, cbar_kws=None, palette=None, hue_order=None, hue_norm=None, color=None, log_scale=None, legend=True, ax=None, **kwargs)
+# distplot() is deprecated and didn't work, so I modified to use histplot().
+# Apparently could have instead modified for displot().
+# We did lose some args moving to histplot().
 
-#seaborn.displot(data=None, *, x=None, y=None, hue=None, row=None, col=None, weights=None, kind='hist', rug=False, rug_kws=None, log_scale=None, legend=True, palette=None, hue_order=None, hue_norm=None, color=None, col_wrap=None, row_order=None, col_order=None, height=5, aspect=1, facet_kws=None, **kwargs)
-
-# Set the x-axis and create a histogram of the data:
+# Set the x-axis:
 x = df7['Runner_mins']
+
+# Create a histogram of the data:
 '''
-#ax = sns.distplot(x, hist=True, kde=True, rug=False, color='m', bins=25, hist_kws={'edgecolor':'black'})
-ax = sns.histplot(x, kde=True, color='m', bins=25) # rug=False, hist_kws={'edgecolor':'black'})
+# We lost some of args switching from distplot() to histplot():
+ax = sns.histplot(x, kde=True, color='m', bins=25)
 #plt.show()
 '''
 
@@ -121,9 +123,8 @@ ax = sns.histplot(x, kde=True, color='m', bins=25) # rug=False, hist_kws={'edgec
 '''
 f_fuko = df7.loc[df7[' Gender']==' F']['Runner_mins']
 m_fuko = df7.loc[df7[' Gender']==' M']['Runner_mins']
-#sns.distplot(f_fuko, hist=True, kde=True, rug=False, hist_kws={'edgecolor':'black'}, label='Female')
+# We lost some of args switching from distplot() to histplot():
 sns.histplot(f_fuko, kde=True, label='Female')
-#sns.distplot(m_fuko, hist=False, kde=True, rug=False, hist_kws={'edgecolor':'black'}, label='Male')
 sns.histplot(m_fuko, kde=True, label='Male')
 plt.legend()
 plt.show()
